@@ -21,7 +21,7 @@ openai_api_key = st.secrets["OPENAI_API_KEY"]
 
 # --- 🤖 LLM ---
 llm = ChatOpenAI(
-    model="gpt-3.5-turbo",
+    model="gpt-4o",  # new GPT-4 Omni
     temperature=0,
     api_key=openai_api_key
 )
@@ -51,7 +51,10 @@ Question:
     return llm.invoke(prompt).content
 
 # --- 🧠 Embeddings + QA for PDF ---
-embeddings = HuggingFaceEmbeddings()
+embeddings = HuggingFaceEmbeddings(
+    model_name="all-MiniLM-L6-v2",
+    model_kwargs={"device": "cpu"}
+)
 text_splitter = CharacterTextSplitter(
     separator="\n", chunk_size=2000, chunk_overlap=200, length_function=len
 )
