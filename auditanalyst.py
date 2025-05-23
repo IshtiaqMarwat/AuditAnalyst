@@ -23,7 +23,7 @@ llm = ChatOpenAI(
 
 # --- 📊 Excel Data Analysis ---
 def analyze_excel_data(df, question):
-    data_str = df.head(100).to_string(index=False)  # limit to 100 rows
+    data_str = df.head(10).to_string(index=False)  # limit to 100 rows
     prompt = f"""
 You are a smart internal auditor analyzing tabular Excel data.
 
