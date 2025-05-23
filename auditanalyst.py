@@ -23,20 +23,32 @@ llm = ChatOpenAI(
 
 # --- 📊 Excel Data Analysis ---
 def analyze_excel_data(df, question):
-    data_str = df.head(10).to_string(index=False)  # limit to 100 rows
-    prompt = f"""
-You are a smart internal auditor analyzing tabular Excel data.
-
-Here is a sample of the uploaded data:
-
-{data_str}
-
-Question:
-{question}
-
-Answer using only the data provided, focusing on insights and trends.
-"""
+        # Convert the entire DataFrame to a string
+        data_str = df.to_string(index=False)
+    
+        # If the string is too long for the model, truncate it safely
+        max_chars = 12000  # GPT-4o handles ~8k tokens ≈ 12-16k characters
+        if len(data_str) > max_chars:
+            data_str = data_str[:max_chars]
+            note = "⚠️ Data was truncated to fit model limits.\n\n"
+        else:
+            note = ""
+    
+        prompt = f"""
+    {note}
+    You are an expert internal auditor analyzing tabular Excel data.
+    
+    Here is the full dataset provided:
+    
+    {data_str}
+    
+    Now, answer the following question **based only on the data above**.
+    
+    Question:
+    {question}
+    """
     return llm.invoke(prompt).content
+
 
 # --- 🌐 Streamlit UI ---
 st.title("📊 AI Excel Audit Analyst")
